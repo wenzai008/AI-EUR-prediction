@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基于AI的非常规气井EUR预测技术研究</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, sans-serif;
+            background: #f0f4f8;
+            color: #1a2332;
+            line-height: 1.6;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #0b1a2e 0%, #1a3a5c 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .navbar .logo {
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none;
+            color: #b0cfe0;
+            font-weight: 500;
+        }
+        .nav-links li:hover { color: #fff; cursor: pointer; }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+        .hero {
+            background: linear-gradient(145deg, #ffffff, #f5faff);
+            border-radius: 28px;
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0,20,40,0.08);
+            border: 1px solid rgba(79,195,247,0.15);
+        }
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0b2b44, #1a6a9e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero .subtitle {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            border-top: 1px solid #e8f0f8;
+            padding-top: 1.2rem;
+            margin-top: 0.8rem;
+            color: #2c4a6a;
+        }
+        .hero .subtitle span {
+            background: #e3f0fd;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0a3d62;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.8rem;
+        }
+        .stat-item {
+            background: white;
+            border-radius: 16px;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #e9f0f8;
+        }
+        .stat-item .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0b2b44;
+        }
+        .stat-item .label {
+            font-size: 0.8rem;
+            color: #5d7d9c;
+            font-weight: 500;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 1.8rem 2rem;
+            box-shadow: 0 6px 24px rgba(0,20,40,0.06);
+            border: 1px solid #eaf1f9;
+        }
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #0a2a44;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+        .model-card {
+            background: #fafdff;
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid #e6f0fa;
+            margin-bottom: 0.8rem;
+        }
+        .model-card .model-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #0b2f4a;
+        }
+        .model-card .model-metrics {
+            display: flex;
+            gap: 1.5rem;
+            margin: 0.6rem 0 0.8rem;
+            font-size: 0.9rem;
+        }
+        .model-card .metric {
+            background: #eaf3fd;
+            padding: 0.15rem 0.8rem;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #11517a;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e2ecf7;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #2d8bcb, #4fc3f7);
+        }
+        .badge-best {
+            background: #1a7a3a;
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.7rem;
+            border-radius: 40px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .prediction-demo {
+            background: linear-gradient(145deg, #f9fcff, #eef6fe);
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid #d4e6f8;
+        }
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem 2rem;
+            align-items: flex-end;
+            margin: 1.2rem 0 1.8rem;
+        }
+        .input-item {
+            flex: 1 0 160px;
+        }
+        .input-item label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1b4a6b;
+            margin-bottom: 0.2rem;
+        }
+        .input-item input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1px solid #cbdae8;
+            border-radius: 14px;
+            background: white;
+            font-size: 0.95rem;
+        }
+        .btn {
+            background: linear-gradient(135deg, #0f3d62, #1a6a9e);
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(26,106,158,0.3);
+        }
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(26,106,158,0.4);
+        }
+        .result-area {
+            background: white;
+            border-radius: 18px;
+            padding: 1.5rem 2rem;
+            margin-top: 1.5rem;
+            border: 1px solid #dce8f2;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .result-area .pred-value {
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: #0b2b44;
+        }
+        .result-area .pred-value small {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #3b688b;
+        }
+        .confidence-tag {
+            background: #e2f0e9;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #146a3a;
+        }
+        .chart-sim {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid #e2eefa;
+        }
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 140px;
+            padding: 0.5rem 0;
+        }
+        .bar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 60px;
+        }
+        .bar {
+            width: 32px;
+            background: linear-gradient(0deg, #1f7eb3, #5fc3ff);
+            border-radius: 8px 8px 4px 4px;
+            min-height: 8px;
+            transition: 0.4s ease;
+        }
+        .bar-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #1f4a6b;
+            margin-top: 6px;
+        }
+        .footer {
+            margin-top: 3.5rem;
+            text-align: center;
+            color: #5b7993;
+            font-size: 0.9rem;
+            border-top: 1px solid #dce7f2;
+            padding-top: 2rem;
+        }
+        @media (max-width: 860px) {
+            .grid-2col { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">⛰️ AI · EUR 预测研究</div>
+    <ul class="nav-links">
+        <li>🏠 总览</li>
+        <li>📊 模型对比</li>
+        <li>🧪 交互预测</li>
+        <li>📄 技术文档</li>
+    </ul>
+</nav>
+
+<div class="container">
+    <section class="hero">
+        <h1>基于AI的非常规气井EUR预测技术</h1>
+        <div class="subtitle">
+            <span>🔬 页岩气 · 致密气 · 煤层气</span>
+            <span>🤖 集成学习 · 深度学习 · 物理约束</span>
+            <span>📈 预测精度提升 18% ~ 27%</span>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-item"><div class="number">4,200+</div><div class="label">训练气井数据</div></div>
+            <div class="stat-item"><div class="number">12</div><div class="label">地质/工程特征</div></div>
+            <div class="stat-item"><div class="number">6</div><div class="label">AI 模型对比</div></div>
+            <div class="stat-item"><div class="number">R² 0.92</div><div class="label">最优模型精度</div></div>
+        </div>
+    </section>
+
+    <div class="grid-2col">
+        <div class="card">
+            <div class="card-title">🧠 主流AI模型性能对比</div>
+            <div class="model-card">
+                <div class="model-name">XGBoost <span class="badge-best">🏆 最优</span></div>
+                <div class="model-metrics"><span class="metric">R² 0.92</span><span class="metric">RMSE 0.38</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:92%"></div></div>
+            </div>
+            <div class="model-card">
+                <div class="model-name">LightGBM</div>
+                <div class="model-metrics"><span class="metric">R² 0.89</span><span class="metric">RMSE 0.42</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:89%"></div></div>
+            </div>
+            <div class="model-card">
+                <div class="model-name">深度神经网络 (DNN)</div>
+                <div class="model-metrics"><span class="metric">R² 0.87</span><span class="metric">RMSE 0.46</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:87%"></div></div>
+            </div>
+            <div class="model-card">
+                <div class="model-name">随机森林 (RF)</div>
+                <div class="model-metrics"><span class="metric">R² 0.84</span><span class="metric">RMSE 0.51</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:84%"></div></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">📐 技术研究框架</div>
+            <ul style="list-style:none; padding-left:0;">
+                <li style="padding:0.6rem 0; border-bottom:1px solid #ecf3fa; display:flex; gap:12px;">
+                    <span style="background:#1a6a9e; color:white; width:24px; height:24px; border-radius:40px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">1</span>
+                    <div><strong>数据构建</strong> — 地质参数、压裂施工、生产动态 3 类 12 维特征</div>
+                </li>
+                <li style="padding:0.6rem 0; border-bottom:1px solid #ecf3fa; display:flex; gap:12px;">
+                    <span style="background:#1a6a9e; color:white; width:24px; height:24px; border-radius:40px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">2</span>
+                    <div><strong>特征工程</strong> — 互信息、递归消除、领域知识融合</div>
+                </li>
+                <li style="padding:0.6rem 0; border-bottom:1px solid #ecf3fa; display:flex; gap:12px;">
+                    <span style="background:#1a6a9e; color:white; width:24px; height:24px; border-radius:40px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">3</span>
+                    <div><strong>模型训练</strong> — 贝叶斯超参数优化 + 5折交叉验证</div>
+                </li>
+                <li style="padding:0.6rem 0; border-bottom:1px solid #ecf3fa; display:flex; gap:12px;">
+                    <span style="background:#1a6a9e; color:white; width:24px; height:24px; border-radius:40px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">4</span>
+                    <div><strong>可解释性</strong> — SHAP 值量化特征贡献，物理一致性校验</div>
+                </li>
+                <li style="padding:0.6rem 0; display:flex; gap:12px;">
+                    <span style="background:#1a6a9e; color:white; width:24px; height:24px; border-radius:40px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">5</span>
+                    <div><strong>部署应用</strong> — 新井EUR快速预测 + 不确定性区间</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <section class="prediction-demo">
+        <h2 style="font-size:1.5rem; color:#0a2a44;">🔮 交互式EUR预测演示</h2>
+        <div class="input-group">
+            <div class="input-item"><label>压裂液量 (m³)</label><input type="number" id="fluid" value="1800" step="100"></div>
+            <div class="input-item"><label>簇间距 (m)</label><input type="number" id="cluster" value="18" step="1"></div>
+            <div class="input-item"><label>脆性指数 (%)</label><input type="number" id="brittle" value="62" step="1"></div>
+            <div class="input-item"><label>地层压力 (MPa)</label><input type="number" id="pressure" value="38" step="0.5"></div>
+            <div class="input-item" style="flex:0 1 auto;"><button class="btn" id="predictBtn">▶ 预测 EUR</button></div>
+        </div>
+        <div class="result-area" id="resultArea">
+            <div><div style="font-weight:500; color:#1b4a6b;">预测 EUR (×10⁶ m³)</div><div class="pred-value" id="eurDisplay">4.86 <small>×10⁶ m³</small></div></div>
+            <div style="display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap;">
+                <span class="confidence-tag">✅ 置信区间 90%</span>
+                <span style="background:#eaf3fd; padding:0.2rem 1rem; border-radius:40px; font-size:0.9rem;">[4.12, 5.63]</span>
+            </div>
+        </div>
+        <div class="chart-sim">
+            <div style="display:flex; justify-content:space-between; font-weight:600; color:#1f4a6b;">
+                <span>特征重要性 (SHAP)</span>
+            </div>
+            <div class="chart-bars">
+                <div class="bar-item"><div class="bar" style="height:98px;"></div><div class="bar-label">压裂液量</div></div>
+                <div class="bar-item"><div class="bar" style="height:72px;"></div><div class="bar-label">簇间距</div></div>
+                <div class="bar-item"><div class="bar" style="height:55px;"></div><div class="bar-label">脆性指数</div></div>
+                <div class="bar-item"><div class="bar" style="height:40px;"></div><div class="bar-label">地层压力</div></div>
+                <div class="bar-item"><div class="bar" style="height:28px;"></div><div class="bar-label">TOC</div></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="footer">
+        <p>🧪 基于AI的非常规气井EUR预测技术研究 · 模拟展示平台</p>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const fluidInput = document.getElementById('fluid');
+        const clusterInput = document.getElementById('cluster');
+        const brittleInput = document.getElementById('brittle');
+        const pressureInput = document.getElementById('pressure');
+        const predictBtn = document.getElementById('predictBtn');
+        const eurDisplay = document.getElementById('eurDisplay');
+
+        function predictEUR(fluid, cluster, brittle, pressure) {
+            let base = 3.0;
+            let fluidEffect = 1.2 * Math.log(fluid / 500 + 0.5);
+            let clusterOpt = 18;
+            let clusterEffect = -0.008 * Math.pow(cluster - clusterOpt, 2) + 1.0;
+            let brittleEffect = 0.012 * (brittle - 40);
+            let pressureEffect = 0.035 * (pressure - 30);
+            let eur = base + fluidEffect + (clusterEffect - 1) * 1.8 + brittleEffect * 1.2 + pressureEffect * 0.6;
+            let noise = 1 + (Math.random() - 0.5) * 0.10;
+            eur = eur * noise;
+            eur = Math.min(8.0, Math.max(1.2, eur));
+            return Math.round(eur * 100) / 100;
+        }
+
+        function updatePrediction() {
+            const fluid = parseFloat(fluidInput.value) || 1500;
+            const cluster = parseFloat(clusterInput.value) || 18;
+            const brittle = parseFloat(brittleInput.value) || 60;
+            const pressure = parseFloat(pressureInput.value) || 35;
+            const eur = predictEUR(fluid, cluster, brittle, pressure);
+            const low = Math.round((eur * 0.88) * 100) / 100;
+            const high = Math.round((eur * 1.16) * 100) / 100;
+            eurDisplay.innerHTML = `${eur} <small>×10⁶ m³</small>`;
+            const resultArea = document.getElementById('resultArea');
+            const spans = resultArea.querySelectorAll('span');
+            if (spans.length >= 2) {
+                spans[1].textContent = `[${low}, ${high}]`;
+            }
+        }
+
+        predictBtn.addEventListener('click', updatePrediction);
+        [fluidInput, clusterInput, brittleInput, pressureInput].forEach(inp => {
+            inp.addEventListener('input', updatePrediction);
+        });
+        updatePrediction();
+    })();
+</script>
+</body>
+</html>
